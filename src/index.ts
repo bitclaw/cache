@@ -5,14 +5,14 @@
  */
 
 // Core middleware functions
-export { evaluateCache, getCacheHeaders, shouldCache } from './middleware';
+export { evaluateCache, getCacheHeaders, shouldCache } from "./middleware";
 // Core types
 export type {
   CacheConfig,
   CacheContext,
   CacheResult,
-  CacheRouteConfig
-} from './types';
+  CacheRouteConfig,
+} from "./types";
 // Utilities
 export {
   CachePresets,
@@ -20,5 +20,5 @@ export {
   formatDuration,
   getTTL,
   mergeCacheControl,
-  parseCacheControl
-} from './utils';
+  parseCacheControl,
+} from "./utils";

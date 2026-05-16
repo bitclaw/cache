@@ -2,14 +2,14 @@ import type {
   CacheConfig,
   CacheContext,
   CacheResult,
-  CacheRouteConfig
-} from './types';
+  CacheRouteConfig,
+} from "./types";
 
 /**
  * Check if a URL matches a pattern
  */
 function matchesPattern(url: string, pattern: string | RegExp): boolean {
-  if (typeof pattern === 'string') {
+  if (typeof pattern === "string") {
     return url === pattern || url.startsWith(pattern);
   }
   return pattern.test(url);
@@ -20,9 +20,9 @@ function matchesPattern(url: string, pattern: string | RegExp): boolean {
  */
 function findMatchingRoute(
   url: string,
-  routes: CacheRouteConfig[]
+  routes: CacheRouteConfig[],
 ): CacheRouteConfig | undefined {
-  return routes.find(route => matchesPattern(url, route.pattern));
+  return routes.find((route) => matchesPattern(url, route.pattern));
 }
 
 /**
@@ -30,12 +30,12 @@ function findMatchingRoute(
  */
 function isExcluded(
   url: string,
-  excludePatterns?: Array<string | RegExp>
+  excludePatterns?: Array<string | RegExp>,
 ): boolean {
   if (!excludePatterns || excludePatterns.length === 0) {
     return false;
   }
-  return excludePatterns.some(pattern => matchesPattern(url, pattern));
+  return excludePatterns.some((pattern) => matchesPattern(url, pattern));
 }
 
 /**
@@ -43,7 +43,7 @@ function isExcluded(
  */
 export function shouldCache(
   config: CacheConfig,
-  context: CacheContext
+  context: CacheContext,
 ): boolean {
   // Check if caching is globally enabled
   if (config.enabled === false) {
@@ -56,7 +56,7 @@ export function shouldCache(
   }
 
   // Only cache GET requests
-  if (context.method !== 'GET') {
+  if (context.method !== "GET") {
     return false;
   }
 
@@ -79,7 +79,7 @@ export function shouldCache(
  * Generate Cache-Control header value
  */
 function buildCacheControlHeader(route: CacheRouteConfig): string {
-  const directives: string[] = ['public'];
+  const directives: string[] = ["public"];
 
   // Add max-age (browser cache)
   directives.push(`max-age=${route.maxAge}`);
@@ -97,14 +97,14 @@ function buildCacheControlHeader(route: CacheRouteConfig): string {
     directives.push(...route.customDirectives);
   }
 
-  return directives.join(', ');
+  return directives.join(", ");
 }
 
 /**
  * Generate CDN-Cache-Control header value (Cloudflare-specific)
  */
 function buildCdnCacheControlHeader(route: CacheRouteConfig): string {
-  const directives: string[] = ['public'];
+  const directives: string[] = ["public"];
 
   // CDN-specific settings
   directives.push(`s-maxage=${route.sMaxAge}`);
@@ -113,7 +113,7 @@ function buildCdnCacheControlHeader(route: CacheRouteConfig): string {
     directives.push(`stale-while-revalidate=${route.staleWhileRevalidate}`);
   }
 
-  return directives.join(', ');
+  return directives.join(", ");
 }
 
 /**
@@ -121,7 +121,7 @@ function buildCdnCacheControlHeader(route: CacheRouteConfig): string {
  */
 export function getCacheHeaders(
   config: CacheConfig,
-  url: string
+  url: string,
 ): Record<string, string> {
   // Find matching route
   const matchingRoute = findMatchingRoute(url, config.routes);
@@ -129,15 +129,15 @@ export function getCacheHeaders(
   if (!matchingRoute) {
     // Return default no-cache headers
     return {
-      'Cache-Control': `public, max-age=${config.defaultMaxAge ?? 0}`
+      "Cache-Control": `public, max-age=${config.defaultMaxAge ?? 0}`,
     };
   }
 
   // Build cache headers
   return {
-    'Cache-Control': buildCacheControlHeader(matchingRoute),
-    'CDN-Cache-Control': buildCdnCacheControlHeader(matchingRoute),
-    Vary: 'Accept-Encoding'
+    "Cache-Control": buildCacheControlHeader(matchingRoute),
+    "CDN-Cache-Control": buildCdnCacheControlHeader(matchingRoute),
+    Vary: "Accept-Encoding",
   };
 }
 
@@ -146,41 +146,41 @@ export function getCacheHeaders(
  */
 export function evaluateCache(
   config: CacheConfig,
-  context: CacheContext
+  context: CacheContext,
 ): CacheResult {
   // Check basic caching eligibility
   if (config.enabled === false) {
     return {
       shouldCache: false,
-      reason: 'Caching is globally disabled'
+      reason: "Caching is globally disabled",
     };
   }
 
   if (!context.isProduction && config.enabled !== true) {
     return {
       shouldCache: false,
-      reason: 'Not in production environment'
+      reason: "Not in production environment",
     };
   }
 
-  if (context.method !== 'GET') {
+  if (context.method !== "GET") {
     return {
       shouldCache: false,
-      reason: `Non-GET method: ${context.method}`
+      reason: `Non-GET method: ${context.method}`,
     };
   }
 
   if (config.excludeWhenAuthenticated && context.isAuthenticated) {
     return {
       shouldCache: false,
-      reason: 'User is authenticated'
+      reason: "User is authenticated",
     };
   }
 
   if (isExcluded(context.url, config.excludePatterns)) {
     return {
       shouldCache: false,
-      reason: 'URL matches exclude pattern'
+      reason: "URL matches exclude pattern",
     };
   }
 
@@ -190,7 +190,7 @@ export function evaluateCache(
   if (!matchingRoute) {
     return {
       shouldCache: false,
-      reason: 'No matching cache route'
+      reason: "No matching cache route",
     };
   }
 
@@ -202,6 +202,6 @@ export function evaluateCache(
     shouldCache: true,
     cacheControl,
     cdnCacheControl,
-    reason: 'Matched cache route'
+    reason: "Matched cache route",
   };
 }

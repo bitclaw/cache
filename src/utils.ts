@@ -1,4 +1,4 @@
-import type { CacheRouteConfig } from './types';
+import type { CacheRouteConfig } from "./types";
 
 /**
  * Preset cache configurations for common use cases
@@ -13,7 +13,7 @@ export const CachePresets = {
   content: {
     maxAge: 300, // 5 minutes
     sMaxAge: 7200, // 2 hours
-    staleWhileRevalidate: 86400 // 24 hours
+    staleWhileRevalidate: 86400, // 24 hours
   },
 
   /**
@@ -25,7 +25,7 @@ export const CachePresets = {
     maxAge: 31536000, // 1 year
     sMaxAge: 31536000, // 1 year
     staleWhileRevalidate: 0,
-    customDirectives: ['immutable'] as string[]
+    customDirectives: ["immutable"] as string[],
   },
 
   /**
@@ -37,7 +37,7 @@ export const CachePresets = {
   api: {
     maxAge: 30, // 30 seconds
     sMaxAge: 300, // 5 minutes
-    staleWhileRevalidate: 3600 // 1 hour
+    staleWhileRevalidate: 3600, // 1 hour
   },
 
   /**
@@ -49,7 +49,7 @@ export const CachePresets = {
   dynamic: {
     maxAge: 60, // 1 minute
     sMaxAge: 300, // 5 minutes
-    staleWhileRevalidate: 3600 // 1 hour
+    staleWhileRevalidate: 3600, // 1 hour
   },
 
   /**
@@ -59,8 +59,8 @@ export const CachePresets = {
     maxAge: 0,
     sMaxAge: 0,
     staleWhileRevalidate: 0,
-    customDirectives: ['no-cache', 'no-store', 'must-revalidate'] as string[]
-  }
+    customDirectives: ["no-cache", "no-store", "must-revalidate"] as string[],
+  },
 } as const;
 
 /**
@@ -69,12 +69,12 @@ export const CachePresets = {
 export function createCacheRoute(
   pattern: string | RegExp,
   preset: keyof typeof CachePresets,
-  overrides?: Partial<CacheRouteConfig>
+  overrides?: Partial<CacheRouteConfig>,
 ): CacheRouteConfig {
   return {
     pattern,
     ...CachePresets[preset],
-    ...overrides
+    ...overrides,
   };
 }
 
@@ -82,12 +82,12 @@ export function createCacheRoute(
  * Parse Cache-Control header value into an object
  */
 export function parseCacheControl(
-  header: string
+  header: string,
 ): Record<string, string | true> {
   const result: Record<string, string | true> = {};
 
-  for (const directive of header.split(',')) {
-    const [key, value] = directive.trim().split('=');
+  for (const directive of header.split(",")) {
+    const [key, value] = directive.trim().split("=");
     if (!key) continue;
 
     if (value) {
@@ -104,7 +104,7 @@ export function parseCacheControl(
  * Convert seconds to human-readable duration
  */
 export function formatDuration(seconds: number): string {
-  if (seconds === 0) return '0s';
+  if (seconds === 0) return "0s";
   if (seconds < 60) return `${seconds}s`;
   if (seconds < 3600) return `${Math.floor(seconds / 60)}m`;
   if (seconds < 86400) return `${Math.floor(seconds / 3600)}h`;
@@ -117,12 +117,12 @@ export function formatDuration(seconds: number): string {
 export function getTTL(cacheControl: string): number {
   const parsed = parseCacheControl(cacheControl);
 
-  if (typeof parsed['s-maxage'] === 'string') {
-    return parseInt(parsed['s-maxage'], 10);
+  if (typeof parsed["s-maxage"] === "string") {
+    return parseInt(parsed["s-maxage"], 10);
   }
 
-  if (typeof parsed['max-age'] === 'string') {
-    return parseInt(parsed['max-age'], 10);
+  if (typeof parsed["max-age"] === "string") {
+    return parseInt(parsed["max-age"], 10);
   }
 
   return 0;
@@ -133,20 +133,20 @@ export function getTTL(cacheControl: string): number {
  * Takes the most restrictive values
  */
 export function mergeCacheControl(...headers: string[]): string {
-  if (headers.length === 0) return 'no-cache';
+  if (headers.length === 0) return "no-cache";
   if (headers.length === 1) return headers[0]!;
 
   const parsed = headers.map(parseCacheControl);
 
   // If any header says no-cache, return no-cache
-  if (parsed.some(p => p['no-cache'] || p['no-store'])) {
-    return 'no-cache, no-store, must-revalidate';
+  if (parsed.some((p) => p["no-cache"] || p["no-store"])) {
+    return "no-cache, no-store, must-revalidate";
   }
 
   // Find minimum max-age
   const maxAges = parsed
-    .map(p =>
-      typeof p['max-age'] === 'string' ? parseInt(p['max-age'], 10) : null
+    .map((p) =>
+      typeof p["max-age"] === "string" ? parseInt(p["max-age"], 10) : null,
     )
     .filter((n): n is number => n !== null);
 
@@ -154,19 +154,19 @@ export function mergeCacheControl(...headers: string[]): string {
 
   // Find minimum s-maxage
   const sMaxAges = parsed
-    .map(p =>
-      typeof p['s-maxage'] === 'string' ? parseInt(p['s-maxage'], 10) : null
+    .map((p) =>
+      typeof p["s-maxage"] === "string" ? parseInt(p["s-maxage"], 10) : null,
     )
     .filter((n): n is number => n !== null);
 
   const minSMaxAge = sMaxAges.length > 0 ? Math.min(...sMaxAges) : undefined;
 
   // Build merged header
-  const directives = ['public', `max-age=${minMaxAge}`];
+  const directives = ["public", `max-age=${minMaxAge}`];
 
   if (minSMaxAge !== undefined) {
     directives.push(`s-maxage=${minSMaxAge}`);
   }
 
-  return directives.join(', ');
+  return directives.join(", ");
 }
