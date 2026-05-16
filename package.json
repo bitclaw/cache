@@ -1,5 +1,5 @@
 {
-  "name": "@sqlite-saas/cache",
+  "name": "@bitclaw/cache",
   "version": "0.1.0",
   "description": "Framework-agnostic caching middleware for edge CDNs",
   "type": "module",
