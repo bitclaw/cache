@@ -2,6 +2,7 @@
   "name": "@bitclaw/cache",
   "version": "1.0.1",
   "description": "Framework-agnostic caching middleware for edge CDNs",
+  "files": ["dist", "LICENSE", "README.md"],
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
