@@ -1,5 +1,5 @@
 /**
- * @sqlite-saas/cache
+ * @bitclaw/cache
  *
  * Framework-agnostic caching middleware for edge CDNs
  */

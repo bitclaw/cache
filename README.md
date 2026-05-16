@@ -15,7 +15,7 @@ Framework-agnostic caching middleware for edge CDNs (Cloudflare, Fastly, etc.)
 ## Installation
 
 ```bash
-bun add @sqlite-saas/cache
+bun add @bitclaw/cache
 ```
 
 ## Quick Start
@@ -23,8 +23,8 @@ bun add @sqlite-saas/cache
 ### Remix/React Router
 
 ```typescript
-import { getCacheHeaders } from '@sqlite-saas/cache'
-import { getRemixCacheHeaders } from '@sqlite-saas/cache/adapters/remix'
+import { getCacheHeaders } from '@bitclaw/cache'
+import { getRemixCacheHeaders } from '@bitclaw/cache/adapters/remix'
 
 // Define your cache configuration
 const cacheConfig = {
@@ -58,7 +58,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 ### Framework-Agnostic Usage
 
 ```typescript
-import { getCacheHeaders, shouldCache } from '@sqlite-saas/cache'
+import { getCacheHeaders, shouldCache } from '@bitclaw/cache'
 
 const cacheConfig = {
   routes: [
@@ -132,7 +132,7 @@ type CacheRouteConfig = {
 Use predefined caching strategies for common scenarios:
 
 ```typescript
-import { CachePresets, createCacheRoute } from '@sqlite-saas/cache'
+import { CachePresets, createCacheRoute } from '@bitclaw/cache'
 
 const cacheConfig = {
   routes: [
@@ -240,7 +240,7 @@ const cacheConfig = {
 ### Basic Usage
 
 ```typescript
-import { getRemixCacheHeaders } from '@sqlite-saas/cache/adapters/remix'
+import { getRemixCacheHeaders } from '@bitclaw/cache/adapters/remix'
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const data = await fetchBlogPosts()
@@ -271,7 +271,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 ### Middleware-Style Wrapper
 
 ```typescript
-import { withCache } from '@sqlite-saas/cache/adapters/remix'
+import { withCache } from '@bitclaw/cache/adapters/remix'
 
 export const loader = withCache(cacheConfig, async ({ request }) => {
   const data = await fetchData()
@@ -282,7 +282,7 @@ export const loader = withCache(cacheConfig, async ({ request }) => {
 ### Headers Function
 
 ```typescript
-import { createRemixCacheHeaders } from '@sqlite-saas/cache/adapters/remix'
+import { createRemixCacheHeaders } from '@bitclaw/cache/adapters/remix'
 
 export const headers = createRemixCacheHeaders(cacheConfig)
 
@@ -297,7 +297,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 ### Parse Cache-Control Header
 
 ```typescript
-import { parseCacheControl } from '@sqlite-saas/cache'
+import { parseCacheControl } from '@bitclaw/cache'
 
 const parsed = parseCacheControl('public, max-age=3600, s-maxage=7200')
 // { public: true, 'max-age': '3600', 's-maxage': '7200' }
@@ -306,7 +306,7 @@ const parsed = parseCacheControl('public, max-age=3600, s-maxage=7200')
 ### Format Duration
 
 ```typescript
-import { formatDuration } from '@sqlite-saas/cache'
+import { formatDuration } from '@bitclaw/cache'
 
 formatDuration(300)    // '5m'
 formatDuration(7200)   // '2h'
@@ -316,7 +316,7 @@ formatDuration(86400)  // '1d'
 ### Get TTL
 
 ```typescript
-import { getTTL } from '@sqlite-saas/cache'
+import { getTTL } from '@bitclaw/cache'
 
 const ttl = getTTL('public, max-age=300, s-maxage=3600')
 // 3600 (prefers s-maxage over max-age)
@@ -325,7 +325,7 @@ const ttl = getTTL('public, max-age=300, s-maxage=3600')
 ### Merge Cache-Control Headers
 
 ```typescript
-import { mergeCacheControl } from '@sqlite-saas/cache'
+import { mergeCacheControl } from '@bitclaw/cache'
 
 const merged = mergeCacheControl(
   'public, max-age=300',
@@ -385,7 +385,7 @@ curl -I https://yourdomain.com/blog/my-post
 
 ```typescript
 // app/utils/cache.config.ts
-import { CacheConfig, createCacheRoute } from '@sqlite-saas/cache'
+import { CacheConfig, createCacheRoute } from '@bitclaw/cache'
 
 export const cacheConfig: CacheConfig = {
   routes: [
@@ -402,7 +402,7 @@ export const cacheConfig: CacheConfig = {
 }
 
 // app/routes/blog.$slug.tsx
-import { getRemixCacheHeaders } from '@sqlite-saas/cache/adapters/remix'
+import { getRemixCacheHeaders } from '@bitclaw/cache/adapters/remix'
 import { cacheConfig } from '#app/utils/cache.config'
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
