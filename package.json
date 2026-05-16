@@ -23,9 +23,10 @@
     "lint:fix": "biome check --write",
     "format": "biome format --write",
     "knip": "knip",
-    "publish:patch": "npm whoami && npm run build && npm version patch && git push --follow-tags && npm publish --access public",
-    "publish:minor": "npm whoami && npm run build && npm version minor && git push --follow-tags && npm publish --access public",
-    "publish:major": "npm whoami && npm run build && npm version major && git push --follow-tags && npm publish --access public"
+    "prepublishOnly": "npm run build && npm test",
+    "publish:patch": "npm whoami && npm version patch && git push --follow-tags && npm publish --access public",
+    "publish:minor": "npm whoami && npm version minor && git push --follow-tags && npm publish --access public",
+    "publish:major": "npm whoami && npm version major && git push --follow-tags && npm publish --access public"
   },
   "keywords": [
     "cache",
