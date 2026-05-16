@@ -3,13 +3,20 @@
   "version": "0.1.0",
   "description": "Framework-agnostic caching middleware for edge CDNs",
   "type": "module",
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts",
-    "./adapters/remix": "./src/adapters/remix.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./adapters/remix": {
+      "types": "./dist/adapters/remix.d.ts",
+      "default": "./dist/adapters/remix.js"
+    }
   },
   "scripts": {
+    "build": "tsc -p tsconfig.build.json",
     "test": "bun test",
     "typecheck": "tsc --noEmit",
     "lint": "biome check",
