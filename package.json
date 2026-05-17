@@ -24,7 +24,8 @@
     "lint:fix": "biome check --write",
     "format": "biome format --write",
     "knip": "knip",
-    "prepublishOnly": "npm run build && npm test",
+    "prepare": "bun run build",
+    "prepublishOnly": "npm test",
     "publish:patch": "npm whoami && npm version patch && git push --follow-tags && npm publish --access public",
     "publish:minor": "npm whoami && npm version minor && git push --follow-tags && npm publish --access public",
     "publish:major": "npm whoami && npm version major && git push --follow-tags && npm publish --access public"
