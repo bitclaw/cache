@@ -4,16 +4,16 @@
   "description": "Framework-agnostic caching middleware for edge CDNs",
   "files": ["dist", "LICENSE", "README.md"],
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
     },
     "./adapters/remix": {
-      "types": "./dist/adapters/remix.d.ts",
-      "default": "./dist/adapters/remix.js"
+      "types": "./src/adapters/remix.ts",
+      "default": "./src/adapters/remix.ts"
     }
   },
   "scripts": {
@@ -24,8 +24,8 @@
     "lint:fix": "biome check --write",
     "format": "biome format --write",
     "knip": "knip",
-    "prepare": "bun run build",
-    "prepublishOnly": "npm test",
+    "prepublishOnly": "npm run build && npm test",
+    "publish:dev": "npm run build && npm publish --tag dev --access public",
     "publish:patch": "npm whoami && npm version patch && git push --follow-tags && npm publish --access public",
     "publish:minor": "npm whoami && npm version minor && git push --follow-tags && npm publish --access public",
     "publish:major": "npm whoami && npm version major && git push --follow-tags && npm publish --access public"
