@@ -1,5 +1,5 @@
-import { evaluateCache, getCacheHeaders } from "../middleware";
-import type { CacheConfig } from "../types";
+import { evaluateCache, getCacheHeaders } from '../middleware';
+import type { CacheConfig } from '../types';
 
 /**
  * Remix-specific types (imported from @remix-run/node if available)
@@ -35,7 +35,7 @@ export function getRemixCacheHeaders(
   context?: {
     isAuthenticated?: boolean;
     isProduction?: boolean;
-  },
+  }
 ): Headers {
   const url = new URL(request.url);
   const pathname = url.pathname;
@@ -46,29 +46,29 @@ export function getRemixCacheHeaders(
 
   // Determine environment
   const isProduction =
-    context?.isProduction ?? process.env.NODE_ENV === "production";
+    context?.isProduction ?? process.env.NODE_ENV === 'production';
 
   // Evaluate cache
   const result = evaluateCache(config, {
     url: pathname,
     method: request.method,
     isAuthenticated,
-    isProduction,
+    isProduction
   });
 
   const headers = new Headers();
 
   if (result.shouldCache && result.cacheControl) {
-    headers.set("Cache-Control", result.cacheControl);
+    headers.set('Cache-Control', result.cacheControl);
 
     if (result.cdnCacheControl) {
-      headers.set("CDN-Cache-Control", result.cdnCacheControl);
+      headers.set('CDN-Cache-Control', result.cdnCacheControl);
     }
 
-    headers.set("Vary", "Accept-Encoding");
+    headers.set('Vary', 'Accept-Encoding');
   } else {
     // No cache
-    headers.set("Cache-Control", "no-cache, no-store, must-revalidate");
+    headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
   }
 
   return headers;
@@ -100,7 +100,7 @@ export function createRemixCacheHeaders(_config: CacheConfig): HeadersFunction {
  */
 export function getCacheHeadersForPath(
   config: CacheConfig,
-  pathname: string,
+  pathname: string
 ): Headers {
   const headerObj = getCacheHeaders(config, pathname);
   const headers = new Headers();
@@ -126,7 +126,7 @@ export function getCacheHeadersForPath(
  */
 export function withCache(
   config: CacheConfig,
-  loader: (args: LoaderFunctionArgs) => Promise<Response> | Response,
+  loader: (args: LoaderFunctionArgs) => Promise<Response> | Response
 ): (args: LoaderFunctionArgs) => Promise<Response> | Response {
   return async (args: LoaderFunctionArgs) => {
     const response = await loader(args);
@@ -147,7 +147,7 @@ export function withCache(
     return new Response(response.body, {
       status: response.status,
       statusText: response.statusText,
-      headers,
+      headers
     });
   };
 }
@@ -170,18 +170,18 @@ export function shouldCacheRemixRequest(
   context?: {
     isAuthenticated?: boolean;
     isProduction?: boolean;
-  },
+  }
 ): boolean {
   const url = new URL(request.url);
   const isAuthenticated = context?.isAuthenticated ?? false;
   const isProduction =
-    context?.isProduction ?? process.env.NODE_ENV === "production";
+    context?.isProduction ?? process.env.NODE_ENV === 'production';
 
   const result = evaluateCache(config, {
     url: url.pathname,
     method: request.method,
     isAuthenticated,
-    isProduction,
+    isProduction
   });
 
   return result.shouldCache;
